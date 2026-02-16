@@ -48,3 +48,6 @@ app.use('/bye', goodbye)
 app.use(notfound);
 
 app.listen(3000);
+
+//ATLASDB="mongodb+srv://api_db_user:ptg4YOwtMBHnbocd@comp229.o7b7tv5.mongodb.net/portfoliodb?appName=COMP229"
+//SECRET_KEY="YOURSECRETKEYGOESHERE"
