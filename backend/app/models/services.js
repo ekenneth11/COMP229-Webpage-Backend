@@ -12,7 +12,7 @@ let servicesModel = mongoose.Schema(
 
 
 // Ensure virtual fields are serialised.
-projectsModel.set('toJSON', {
+servicesModel.set('toJSON', {
     virtuals: true,
     versionKey: false,
     transform: function (doc, ret) {

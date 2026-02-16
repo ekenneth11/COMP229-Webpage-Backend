@@ -15,7 +15,7 @@ let referencesModel = mongoose.Schema(
 
 
 // Ensure virtual fields are serialised.
-projectsModel.set('toJSON', {
+referencesModel.set('toJSON', {
     virtuals: true,
     versionKey: false,
     transform: function (doc, ret) {
