@@ -1,7 +1,7 @@
 let usersModel = require('../models/users');
 
 //getting all users
-module.exports.usersGetAll = async (req, res, body) =>{
+module.exports.usersGetAll = async (req, res, next) =>{
     try{
         let list = await usersModel.find({});
 
@@ -17,7 +17,7 @@ module.exports.usersGetAll = async (req, res, body) =>{
 }
 
 //getting a user by ID
-module.exports.getUserByID = async (req, res, body) => {
+module.exports.getUserByID = async (req, res, next) => {
     try{
         let user = await usersModel.find({_id: req.params.id});
 
@@ -36,11 +36,11 @@ module.exports.getUserByID = async (req, res, body) => {
 }
 
 //adding a new user
-module.exports.addNewUser = async (req, res, body) => {
+module.exports.addNewUser = async (req, res, next) => {
     try{
         let newUser = new usersModel(req.body);
         
-        let result = await usersModel(newService);
+        let result = await usersModel.create(newUser);
         console.log(result);
 
         res.json({
@@ -55,14 +55,14 @@ module.exports.addNewUser = async (req, res, body) => {
 }
 
 //edit a user by ID
-module.exports.editUserByID = async (req, res, body) => {
+module.exports.editUserByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
 
         //since were making a new model, it will make a different id
         let updateUser = new usersModel(req.body);
         //making the newly created model the same id
-        updateReference._id = id;
+        updateUser._id = id;
 
         let result = await usersModel.updateOne({_id:id}, updateUser);
 
@@ -81,9 +81,9 @@ module.exports.editUserByID = async (req, res, body) => {
 }
 
 //deleting a user by ID
-module.exports.deleteUserByID = async (req, res, body) => {
+module.exports.deleteUserByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
         
         let result = await usersModel.deleteOne({_id: id});
 
