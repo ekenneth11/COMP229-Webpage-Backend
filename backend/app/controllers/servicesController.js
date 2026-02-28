@@ -1,9 +1,9 @@
-let serviceModel = require('../models/services');
+let servicesModel = require('../models/services');
 
 //getting all services
-module.exports.serviceGetAll = async (req, res, body) =>{
+module.exports.serviceGetAll = async (req, res, next) =>{
     try{
-        let list = await serviceModel.find({});
+        let list = await servicesModel.find({});
 
         res.json({
             success: true,
@@ -17,9 +17,9 @@ module.exports.serviceGetAll = async (req, res, body) =>{
 }
 
 //getting a service by ID
-module.exports.getServiceByID = async (req, res, body) => {
+module.exports.getServiceByID = async (req, res, next) => {
     try{
-        let service = await serviceModel.find({_id: req.params.id});
+        let service = await servicesModel.find({_id: req.params.id});
 
         if(!service){ //project not in the database
             throw new Error("Service not found. Are you sure it exists?")
@@ -36,11 +36,11 @@ module.exports.getServiceByID = async (req, res, body) => {
 }
 
 //adding a new service
-module.exports.addNewService = async (req, res, body) => {
+module.exports.addNewService = async (req, res, next) => {
     try{
-        let newService = new serviceModel(req.body);
+        let newService = new servicesModel(req.body);
         
-        let result = await serviceModel(newService);
+        let result = await servicesModel.create(newService);
         console.log(result);
 
         res.json({
@@ -55,16 +55,16 @@ module.exports.addNewService = async (req, res, body) => {
 }
 
 //edit a service by ID
-module.exports.editServiceByID = async (req, res, body) => {
+module.exports.editServiceByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
 
         //since were making a new model, it will make a different id
-        let updateService = new serviceModel(req.body);
+        let updateService = new servicesModel(req.body);
         //making the newly created model the same id
         updateService._id = id;
 
-        let result = await serviceModel.updateOne({_id:id}, updateService);
+        let result = await servicesModel.updateOne({_id:id}, updateService);
 
         if (result.modifiedCount > 0){
             res.json({
@@ -81,11 +81,11 @@ module.exports.editServiceByID = async (req, res, body) => {
 }
 
 //deleting a service by ID
-module.exports.deleteServiceByID = async (req, res, body) => {
+module.exports.deleteServiceByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
         
-        let result = await serviceModel.deleteOne({_id: id});
+        let result = await servicesModel.deleteOne({_id: id});
 
         if (result.deletedCount > 0){
             res.json({

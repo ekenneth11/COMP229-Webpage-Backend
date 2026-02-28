@@ -1,7 +1,7 @@
 let referenceModel = require('../models/references');
 
-//getting all References
-module.exports.referenceGetAll = async (req, res, body) =>{
+//getting all reference
+module.exports.referenceGetAll = async (req, res, next) =>{
     try{
         let list = await referenceModel.find({});
 
@@ -17,7 +17,7 @@ module.exports.referenceGetAll = async (req, res, body) =>{
 }
 
 //getting a reference by ID
-module.exports.getReferenceByID = async (req, res, body) => {
+module.exports.getReferenceByID = async (req, res, next) => {
     try{
         let reference = await referenceModel.find({_id: req.params.id});
 
@@ -36,11 +36,11 @@ module.exports.getReferenceByID = async (req, res, body) => {
 }
 
 //adding a new reference
-module.exports.addNewReference = async (req, res, body) => {
+module.exports.addNewReference = async (req, res, next) => {
     try{
         let newReference = new referenceModel(req.body);
         
-        let result = await referenceModel(newReference);
+        let result = await referenceModel.create(newReference);
         console.log(result);
 
         res.json({
@@ -55,9 +55,9 @@ module.exports.addNewReference = async (req, res, body) => {
 }
 
 //edit a reference by ID
-module.exports.editReferenceByID = async (req, res, body) => {
+module.exports.editReferenceByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
 
         //since were making a new model, it will make a different id
         let updateReference = new referenceModel(req.body);
@@ -80,10 +80,10 @@ module.exports.editReferenceByID = async (req, res, body) => {
     }
 }
 
-//deleting a refrence by ID
-module.exports.deleteReferenceByID = async (req, res, body) => {
+//deleting a reference by ID
+module.exports.deleteReferenceByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
         
         let result = await referenceModel.deleteOne({_id: id});
 

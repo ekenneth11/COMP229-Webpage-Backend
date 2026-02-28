@@ -1,9 +1,9 @@
-let ProjectsModel = require('../models/projects');
+let projectsModel = require('../models/projects');
 
-//returns all the projects in the database
-module.exports.projectsGetAll = async (req, res, body) =>{
+//getting all projects
+module.exports.projectsGetAll = async (req, res, next) =>{
     try{
-        let list = await ProjectsModel.find({});
+        let list = await projectsModel.find({});
 
         res.json({
             success: true,
@@ -16,18 +16,18 @@ module.exports.projectsGetAll = async (req, res, body) =>{
     }
 }
 
-//returns project by ID
-module.exports.projectsGetID = async (req, res, body) => {
+//getting a projects by ID
+module.exports.projectsGetID = async (req, res, next) => {
     try{
-        let project = await ProjectsModel.find({_id: req.params.id});
+        let projects = await projectsModel.find({_id: req.params.id});
 
-        if(!project){ //project not in the database
-            throw new Error("Project not found. Are you sure it exists?")
+        if(!projects){ //project not in the database
+            throw new Error("Projects not found. Are you sure it exists?")
         }
         res.json({
             success: true,
-            message: "Project list retrieved successfully",
-            data: project
+            message: "Projects list retrieved successfully",
+            data: projects
         });
     }catch (error){
         console.log(error);
@@ -35,17 +35,17 @@ module.exports.projectsGetID = async (req, res, body) => {
     }
 }
 
-//adding a new project to the database
-module.exports.projectsNewItem = async (req, res, body) => {
+//adding a new projects
+module.exports.projectsNewItem = async (req, res, next) => {
     try{
-        let newProject = new ProjectsModel(req.body);
+        let newProjects = new projectsModel(req.body);
         
-        let result = await ProjectsModel(newProject);
+        let result = await projectsModel.create(newProjects);
         console.log(result);
 
         res.json({
             success: true,
-            message: "Project added successfully",
+            message: "Projects added successfully",
             data: result
         });
     }catch (error){
@@ -54,25 +54,25 @@ module.exports.projectsNewItem = async (req, res, body) => {
     }
 }
 
-//update a project by ID
-module.exports.projectsUpdateByID = async (req, res, body) => {
+//edit a projects by ID
+module.exports.projectsUpdateByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
 
         //since were making a new model, it will make a different id
-        let updateProject = new ProjectsModel(req.body);
+        let updateProjects = new projectsModel(req.body);
         //making the newly created model the same id
-        updateProject._id = id;
+        updateProjects._id = id;
 
-        let result = await ProjectsModel.updateOne({_id:id}, updateProject);
+        let result = await projectsModel.updateOne({_id:id}, updateProjects);
 
         if (result.modifiedCount > 0){
             res.json({
                 success: true,
-                message: "Project edited successfully",
+                message: "Projects edited successfully",
             });
         }else{
-            throw new Error('Project not updated. Are you sure it exists?')
+            throw new Error('Projects not updated. Are you sure it exists?')
         }
     }catch (error){
         console.log(error);
@@ -80,19 +80,20 @@ module.exports.projectsUpdateByID = async (req, res, body) => {
     }
 }
 
-module.exports.projectsDeleteByID = async (req, res, body) => {
+//deleting a projects by ID
+module.exports.projectsDeleteByID = async (req, res, next) => {
     try{
-        let id = res.params.id;
+        let id = req.params.id;
         
-        let result = await ProjectsModel.deleteOne({_id: id});
+        let result = await projectsModel.deleteOne({_id: id});
 
         if (result.deletedCount > 0){
             res.json({
                 success: true,
-                message: "Project deleted successfully",
+                message: "Projects deleted successfully",
             });
         }else{
-            throw new Error('Project not deleted. Are you sure it exists?')
+            throw new Error('Projects not deleted. Are you sure it exists?')
         }
     }catch (error){
         console.log(error);
