@@ -1,4 +1,4 @@
-let User = require('../models/user');
+let User = require('../models/users');
 let jwt = require('jsonwebtoken');
 let { expressjwt } = require('express-jwt');
 

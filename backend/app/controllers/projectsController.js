@@ -1,5 +1,5 @@
 let projectsModel = require('../models/projects');
-let userModel = require('../models/user');
+let userModel = require('../models/users');
 
 //getting all projects
 module.exports.projectsGetAll = async (req, res, next) =>{
