@@ -17,13 +17,13 @@ let projectsRouter = require('../app/routers/projectsRouter');
 let referenceRouter = require('../app/routers/referenceRouter');
 let servicesRouter = require('../app/routers/servicesRouter');
 let usersRouter = require('../app/routers/usersRouter');
-
+let authRouter = require('../app/routers/authRouter');
 // Define paths for the routers
 app.use('/api/projects', projectsRouter);
 app.use("/api/references", referenceRouter);
 app.use("/api/services", servicesRouter);
 app.use("/api/users", usersRouter);
-
+app.use("/api/auth", authRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
