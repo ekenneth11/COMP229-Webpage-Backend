@@ -3,7 +3,7 @@ let referenceModel = require('../models/references');
 //getting all reference
 module.exports.referenceGetAll = async (req, res, next) =>{
     try{
-        let list = await referenceModel.find({});
+        let list = await referenceModel.find({}).populate('owner');
 
         res.json({
             success: true,
@@ -19,7 +19,7 @@ module.exports.referenceGetAll = async (req, res, next) =>{
 //getting a reference by ID
 module.exports.getReferenceByID = async (req, res, next) => {
     try{
-        let reference = await referenceModel.find({_id: req.params.id});
+        let reference = await referenceModel.find({_id: req.params.id}).populate('owner');
 
         if(!reference){ //project not in the database
             throw new Error("Reference not found. Are you sure it exists?")
@@ -38,15 +38,24 @@ module.exports.getReferenceByID = async (req, res, next) => {
 //adding a new reference
 module.exports.addNewReference = async (req, res, next) => {
     try{
+        const ownerId = req.auth?.id || req.auth?._id;
+        if (!ownerId) {
+            throw new Error('Authenticated user id is missing from token payload.');
+        }
+
+        req.body.owner = ownerId;
+
         let newReference = new referenceModel(req.body);
         
         let result = await referenceModel.create(newReference);
         console.log(result);
 
+        let populatedResult = await referenceModel.findById(result._id).populate('owner');
+
         res.json({
             success: true,
             message: "Reference added successfully",
-            data: result
+            data: populatedResult
         });
     }catch (error){
         console.log(error);

@@ -3,7 +3,7 @@ let servicesModel = require('../models/services');
 //getting all services
 module.exports.serviceGetAll = async (req, res, next) =>{
     try{
-        let list = await servicesModel.find({});
+        let list = await servicesModel.find({}).populate('owner');
 
         res.json({
             success: true,
@@ -19,7 +19,7 @@ module.exports.serviceGetAll = async (req, res, next) =>{
 //getting a service by ID
 module.exports.getServiceByID = async (req, res, next) => {
     try{
-        let service = await servicesModel.find({_id: req.params.id});
+        let service = await servicesModel.find({_id: req.params.id}).populate('owner');
 
         if(!service){ //project not in the database
             throw new Error("Service not found. Are you sure it exists?")
@@ -38,15 +38,24 @@ module.exports.getServiceByID = async (req, res, next) => {
 //adding a new service
 module.exports.addNewService = async (req, res, next) => {
     try{
+        const ownerId = req.auth?.id || req.auth?._id;
+        if (!ownerId) {
+            throw new Error('Authenticated user id is missing from token payload.');
+        }
+
+        req.body.owner = ownerId;
+
         let newService = new servicesModel(req.body);
         
         let result = await servicesModel.create(newService);
         console.log(result);
 
+        let populatedResult = await servicesModel.findById(result._id).populate('owner');
+
         res.json({
             success: true,
             message: "Service added successfully",
-            data: result
+            data: populatedResult
         });
     }catch (error){
         console.log(error);
