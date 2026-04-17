@@ -71,21 +71,19 @@ module.exports.editServiceByID = async (req, res, next) => {
         // Keep the original owner when updating service fields.
         delete req.body.owner;
 
-        //since were making a new model, it will make a different id
-        let updateService = new servicesModel(req.body);
-        //making the newly created model the same id
-        updateService._id = id;
+        let updatedService = await servicesModel
+            .findByIdAndUpdate(id, { $set: req.body }, { new: true, runValidators: true })
+            .populate('owner');
 
-        let result = await servicesModel.updateOne({_id:id}, updateService);
-
-        if (result.modifiedCount > 0){
-            res.json({
-                success: true,
-                message: "Service edited successfully",
-            });
-        }else{
+        if (!updatedService) {
             throw new Error('Service not updated. Are you sure it exists?')
         }
+
+        res.json({
+            success: true,
+            message: "Service edited successfully",
+            data: updatedService
+        });
     }catch (error){
         console.log(error);
         next(error);

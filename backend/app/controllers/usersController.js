@@ -59,21 +59,29 @@ module.exports.editUserByID = async (req, res, next) => {
     try{
         let id = req.params.id;
 
-        //since were making a new model, it will make a different id
-        let updateUser = new usersModel(req.body);
-        //making the newly created model the same id
-        updateUser._id = id;
+        if (req.body.password) {
+            let tempUser = new usersModel();
+            tempUser.password = req.body.password;
+            req.body.hashed_password = tempUser.hashed_password;
+            req.body.salt = tempUser.salt;
+            delete req.body.password;
+        }
 
-        let result = await usersModel.updateOne({_id:id}, updateUser);
+        let updatedUser = await usersModel.findByIdAndUpdate(
+            id,
+            { $set: req.body },
+            { new: true, runValidators: true }
+        );
 
-        if (result.modifiedCount > 0){
-            res.json({
-                success: true,
-                message: "User edited successfully",
-            });
-        }else{
+        if (!updatedUser){
             throw new Error('User not updated. Are you sure it exists?')
         }
+
+        res.json({
+            success: true,
+            message: "User edited successfully",
+            data: updatedUser
+        });
     }catch (error){
         console.log(error);
         next(error);

@@ -71,21 +71,19 @@ module.exports.editReferenceByID = async (req, res, next) => {
         // Keep the original owner when updating reference fields.
         delete req.body.owner;
 
-        //since were making a new model, it will make a different id
-        let updateReference = new referenceModel(req.body);
-        //making the newly created model the same id
-        updateReference._id = id;
+        let updatedReference = await referenceModel
+            .findByIdAndUpdate(id, { $set: req.body }, { new: true, runValidators: true })
+            .populate('owner');
 
-        let result = await referenceModel.updateOne({_id:id}, updateReference);
-
-        if (result.modifiedCount > 0){
-            res.json({
-                success: true,
-                message: "Reference edited successfully",
-            });
-        }else{
+        if (!updatedReference) {
             throw new Error('Reference not updated. Are you sure it exists?')
         }
+
+        res.json({
+            success: true,
+            message: "Reference edited successfully",
+            data: updatedReference
+        });
     }catch (error){
         console.log(error);
         next(error);
