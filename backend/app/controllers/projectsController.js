@@ -39,14 +39,8 @@ module.exports.projectsGetID = async (req, res, next) => {
 //adding a new projects
 module.exports.projectsNewItem = async (req, res, next) => {
     try{
-        // If owner is provided, look up the user by email to get their ObjectId
-        if (req.body.owner) {
-            const user = await userModel.findOne({ email: req.body.owner });
-            if (!user) {
-                throw new Error(`User with email "${req.body.owner}" not found`);
-            }
-            req.body.owner = user._id; // Store the ObjectId, not the email string
-        }
+        // Always assign the currently authenticated user as the owner.
+        req.body.owner = req.auth.id;
 
         let newProjects = new projectsModel(req.body);
         
