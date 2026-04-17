@@ -4,7 +4,11 @@ let projectsModel = mongoose.Schema(
     {
         title: String,
         description: String,
-        completion: Date
+        completion: Date,
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     },
     {
         collection: "projects"

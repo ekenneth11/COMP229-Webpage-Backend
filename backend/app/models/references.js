@@ -6,7 +6,11 @@ let referencesModel = mongoose.Schema(
         lastName: String,
         email: String,
         position: String,
-        company: String
+        company: String,
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     },
     {
         collection: "references"

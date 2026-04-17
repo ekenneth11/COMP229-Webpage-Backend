@@ -4,6 +4,10 @@ let servicesModel = mongoose.Schema(
     {
         title: String,
         description: String,
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
     },
     {
         collection: "services"
