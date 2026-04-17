@@ -6,7 +6,8 @@ let servicesModel = mongoose.Schema(
         description: String,
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
+            ref: "User",
+            immutable: true
         }
     },
     {

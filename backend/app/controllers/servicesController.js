@@ -68,6 +68,9 @@ module.exports.editServiceByID = async (req, res, next) => {
     try{
         let id = req.params.id;
 
+        // Keep the original owner when updating service fields.
+        delete req.body.owner;
+
         //since were making a new model, it will make a different id
         let updateService = new servicesModel(req.body);
         //making the newly created model the same id

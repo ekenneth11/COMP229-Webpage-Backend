@@ -1,5 +1,4 @@
 let projectsModel = require('../models/projects');
-let userModel = require('../models/users');
 
 //getting all projects
 module.exports.projectsGetAll = async (req, res, next) =>{
@@ -71,14 +70,8 @@ module.exports.projectsUpdateByID = async (req, res, next) => {
     try{
         let id = req.params.id;
 
-        // If owner is being updated, look up the user by email to get their ObjectId
-        if (req.body.owner) {
-            const user = await userModel.findOne({ email: req.body.owner });
-            if (!user) {
-                throw new Error(`User with email "${req.body.owner}" not found`);
-            }
-            req.body.owner = user._id; // Store the ObjectId, not the email string
-        }
+        // Keep the original owner when updating project fields.
+        delete req.body.owner;
 
         let updateProjects = new projectsModel(req.body);
         updateProjects._id = id;

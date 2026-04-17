@@ -9,7 +9,8 @@ let referencesModel = mongoose.Schema(
         company: String,
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
+            ref: "User",
+            immutable: true
         }
     },
     {

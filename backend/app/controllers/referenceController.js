@@ -68,6 +68,9 @@ module.exports.editReferenceByID = async (req, res, next) => {
     try{
         let id = req.params.id;
 
+        // Keep the original owner when updating reference fields.
+        delete req.body.owner;
+
         //since were making a new model, it will make a different id
         let updateReference = new referenceModel(req.body);
         //making the newly created model the same id
