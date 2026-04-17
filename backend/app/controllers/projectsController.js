@@ -40,7 +40,12 @@ module.exports.projectsGetID = async (req, res, next) => {
 module.exports.projectsNewItem = async (req, res, next) => {
     try{
         // Always assign the currently authenticated user as the owner.
-        req.body.owner = req.auth.id;
+        const ownerId = req.auth?.id || req.auth?._id;
+        if (!ownerId) {
+            throw new Error('Authenticated user id is missing from token payload.');
+        }
+
+        req.body.owner = ownerId;
 
         let newProjects = new projectsModel(req.body);
         
