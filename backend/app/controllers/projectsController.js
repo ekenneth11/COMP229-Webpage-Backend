@@ -73,22 +73,19 @@ module.exports.projectsUpdateByID = async (req, res, next) => {
         // Keep the original owner when updating project fields.
         delete req.body.owner;
 
-        let updateProjects = new projectsModel(req.body);
-        updateProjects._id = id;
+        let updatedProject = await projectsModel
+            .findByIdAndUpdate(id, { $set: req.body }, { new: true, runValidators: true })
+            .populate('owner');
 
-        let result = await projectsModel.updateOne({_id:id}, updateProjects);
-
-        if (result.modifiedCount > 0){
-            // Return the updated project with populated owner
-            let updatedProject = await projectsModel.findById(id).populate('owner');
-            res.json({
-                success: true,
-                message: "Projects edited successfully",
-                data: updatedProject
-            });
-        }else{
+        if (!updatedProject) {
             throw new Error('Projects not updated. Are you sure it exists?')
         }
+
+        res.json({
+            success: true,
+            message: "Projects edited successfully",
+            data: updatedProject
+        });
     }catch (error){
         console.log(error);
         next(error);
